@@ -1,0 +1,178 @@
+task 0.
+[nastya1@localhost ~]$ ssh-keygen
+[nastya1@localhost ~]$ ls ~/.ssh
+id_rsa  id_rsa.pub  known_hosts
+[nastya1@localhost ~]$ ssh-copy-id -i ~/.ssh/id_rsa.pub nastya@192.168.0.107
+[nastya1@localhost ~]$ sudo vi /etc/ssh/ssh_config
+
+Host nastya
+        HostName 192.168.0.107
+        User nastya
+        Port 22
+        IdentityFile ~/.ssh/id_rsa
+
+
+task 1.
+[nastya@localhost ~]$ ls -adf /usr/share/man/man*/*config*
+/usr/share/man/man1/pkg-config.1.gz
+/usr/share/man/man5/config.5ssl.gz
+/usr/share/man/man5/config-util.5.gz
+/usr/share/man/man5/selinux_config.5.gz
+...  
+и тд
+
+[nastya@localhost ~]$ ls -adf /usr/share/man/man[17]/*system*
+/usr/share/man/man1/systemctl.1.gz
+/usr/share/man/man1/systemd.1.gz
+/usr/share/man/man1/systemd-analyze.1.gz
+...
+и тд
+
+task 2.
+[nastya@localhost ~]$ find /usr/share/man -name "*help*"
+/usr/share/man/man1/help.1.gz
+/usr/share/man/man5/firewalld.helper.5.gz
+/usr/share/man/man8/mkhomedir_helper.8.gz
+/usr/share/man/man8/pwhistory_helper.8.gz
+/usr/share/man/man8/ssh-pkcs11-helper.8.gz
+
+[nastya@localhost ~]$ find /usr/share/man -name "conf*"
+/usr/share/man/man5/config.5ssl.gz
+/usr/share/man/man5/config-util.5.gz
+
+Примеры использования find c параметром exec:
+
+Рекурсивно менять владельца файлов с old на new:
+find . -user olduser -type f  -exec chown newuser {} \;
+
+Рекурсивно измененить права доступа для всех директорий:
+find . -type d -exec chmod 755 {} \;
+
+task 3.
+[nastya@localhost ~]$ tail -n2 /etc/fstab
+
+[nastya@localhost ~]$ head -n7 /etc/yum.conf
+
+[nastya@localhost ~]$ wc -l /etc/yum.conf
+26 /etc/yum.conf
+[nastya@localhost ~]$ head -n50 /etc/yum.conf
+
+#  This is the default, if you make this bigger yum won't see if the metadata
+# is newer on the remote and so you'll "gain" the bandwidth of not having to
+# download the new metadata and "pay" for it by yum not having correct
+# information.
+#  It is esp. important, to have correct metadata, for distributions like
+# Fedora which don't keep old packages around. If you don't like this checking
+# interupting your command line usage, it's much better to have something
+# manually check the metadata once an hour (yum-updatesd will do this).
+# metadata_expire=90m
+
+task 4.
+[nastya@localhost ~]$ touch file_name{1..3}.md
+[nastya@localhost ~]$ mv file_name1{.md,.textdoc}
+[nastya@localhost ~]$ mv file_name2{.md,}
+[nastya@localhost ~]$ mv file_name3{.md,.md.latest}
+[nastya@localhost ~]$ ls
+file_name1.textdoc  file_name2  file_name3.md.latest
+[nastya@localhost ~]$ mv file_name1{.textdoc,.txt}
+[nastya@localhost ~]$ ls
+file_name1.txt  file_name2  file_name3.md.latest
+
+task 5.
+[nastya@localhost ~]$ cd /mnt
+[nastya@localhost mnt]$ cd ~
+[nastya@localhost ~]$ cd /home/nastya
+[nastya@localhost mnt]$ cd -
+/home/nastya
+[nastya@localhost mnt]$ cd
+[nastya@localhost ~]$ cd $HOME
+
+
+task 6.
+[nastya@localhost ~]$ mkdir -p new in-process/tread{0..2} processed
+[nastya@localhost new]$ touch data{0..9}{0..9}
+[nastya@localhost new]$ cp data{00..33} /home/nastya/in-process/tread0
+[nastya@localhost new]$ cp data{34..66} /home/nastya/in-process/tread1
+[nastya@localhost new]$ cp data{67..99} /home/nastya/in-process/tread2
+[nastya@localhost new]$ ls /home/nastya/in-process/*
+/home/nastya/in-process/tread0:
+data00  data04  data08  data12  data16  data20  data24  data28  data32
+data01  data05  data09  data13  data17  data21  data25  data29  data33
+data02  data06  data10  data14  data18  data22  data26  data30
+data03  data07  data11  data15  data19  data23  data27  data31
+
+/home/nastya/in-process/tread1:
+data34  data38  data42  data46  data50  data54  data58  data62  data66
+data35  data39  data43  data47  data51  data55  data59  data63
+data36  data40  data44  data48  data52  data56  data60  data64
+data37  data41  data45  data49  data53  data57  data61  data65
+
+/home/nastya/in-process/tread2:
+data67  data71  data75  data79  data83  data87  data91  data95  data99
+data68  data72  data76  data80  data84  data88  data92  data96
+data69  data73  data77  data81  data85  data89  data93  data97
+data70  data74  data78  data82  data86  data90  data94  data98
+[nastya@localhost new]$  mv /home/nastya/in-process/tread{0..2}/* /home/nastya/processed/
+[nastya@localhost new]$ ls /home/nastya/processed/ /home/nastya/in-process/*
+/home/nastya/in-process/tread0:
+
+/home/nastya/in-process/tread1:
+
+/home/nastya/in-process/tread2:
+
+/home/nastya/processed/:
+data00  data10  data20  data30  data40  data50  data60  data70  data80  data90
+data01  data11  data21  data31  data41  data51  data61  data71  data81  data91
+data02  data12  data22  data32  data42  data52  data62  data72  data82  data92
+data03  data13  data23  data33  data43  data53  data63  data73  data83  data93
+data04  data14  data24  data34  data44  data54  data64  data74  data84  data94
+data05  data15  data25  data35  data45  data55  data65  data75  data85  data95
+data06  data16  data26  data36  data46  data56  data66  data76  data86  data96
+data07  data17  data27  data37  data47  data57  data67  data77  data87  data97
+data08  data18  data28  data38  data48  data58  data68  data78  data88  data98
+data09  data19  data29  data39  data49  data59  data69  data79  data89  data99
+[nastya@localhost new]$
+
+
+#!/bin/bash
+
+dir_processed=$HOME/processed
+dir_new=$HOME/new
+
+cnt_processed=$(ls $dir_processed | wc -l)
+cnt_new=$(ls $dir_new | wc -l)
+if [ $cnt_new -eq $cnt_processed ]; then
+        rm $dir_new/*
+fi
+
+[nastya@localhost ~]$ bash  task6.sh
+[nastya@localhost ~]$ ls new
+
+task 7.
+без eval не работает, потому что фигурная скобка работает только,
+если в нее изначально подставлены значения, например, echo file{1..3}.
+eval в свою очередь позволяет передать в фигурную скобку значения переменных.
+
+#!/bin/bash
+a=1; b=3
+eval echo file{$a..$b}
+
+[nastya@localhost ~]$ vi task7.sh
+[nastya@localhost ~]$ bash task7.sh
+file1 file2 file3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
